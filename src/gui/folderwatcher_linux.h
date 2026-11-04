@@ -58,7 +58,7 @@ private:
     QHash<int, QString> _watchToPath;
     QMap<QString, int> _pathToWatch;
     QScopedPointer<QSocketNotifier> _socket;
-    int _fd = 0;
+    int _fd = -1;
 };
 }
 

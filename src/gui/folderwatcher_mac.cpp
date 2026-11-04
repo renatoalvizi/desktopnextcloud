@@ -13,6 +13,7 @@
 
 #include <cerrno>
 #include <QDirIterator>
+#include <QSet>
 #include <QStringList>
 
 
@@ -114,13 +115,17 @@ void FolderWatcherPrivate::startWatching()
 
 QStringList FolderWatcherPrivate::addCoalescedPaths(const QStringList &paths) const
 {
+    // Hash lookups: a list lookup per entry made copying a large folder into
+    // the sync folder quadratic, freezing the UI thread.
+    auto seen = QSet<QString>(paths.cbegin(), paths.cend());
     QStringList coalescedPaths;
     for (const auto &eventPath : paths) {
         if (QDir(eventPath).exists()) {
             QDirIterator it(eventPath, QDir::AllDirs | QDir::NoDotAndDotDot | QDir::Files, QDirIterator::Subdirectories);
             while (it.hasNext()) {
                 const auto path = it.next();
-                if (!paths.contains(path)) {
+                if (!seen.contains(path)) {
+                    seen.insert(path);
                     coalescedPaths.append(path);
                 }
             }

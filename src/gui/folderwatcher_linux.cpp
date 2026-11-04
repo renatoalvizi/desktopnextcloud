@@ -12,6 +12,7 @@
 #include "folderwatcher_linux.h"
 
 #include <cerrno>
+#include <unistd.h>
 #include <QStringList>
 #include <QObject>
 #include <QVarLengthArray>
@@ -23,8 +24,8 @@ FolderWatcherPrivate::FolderWatcherPrivate(FolderWatcher *p, const QString &path
     , _parent(p)
     , _folder(path)
 {
-    _fd = inotify_init();
-    if (_fd != -1) {
+    _fd = inotify_init1(IN_CLOEXEC);
+    if (_fd > -1) {
         _socket.reset(new QSocketNotifier(_fd, QSocketNotifier::Read));
         connect(_socket.data(), &QSocketNotifier::activated, this, &FolderWatcherPrivate::slotReceivedNotification);
     } else {
@@ -34,7 +35,18 @@ FolderWatcherPrivate::FolderWatcherPrivate(FolderWatcher *p, const QString &path
     QMetaObject::invokeMethod(this, "slotAddFolderRecursive", Q_ARG(QString, path));
 }
 
-FolderWatcherPrivate::~FolderWatcherPrivate() = default;
+FolderWatcherPrivate::~FolderWatcherPrivate()
+{
+    // Closing the inotify instance also frees all its watches. Without this,
+    // every watcher that was ever destroyed kept an inotify instance and its
+    // watches until the client exited, eventually exhausting the user's
+    // inotify limits (max_user_instances / max_user_watches).
+    _socket.reset();
+    if (_fd > -1) {
+        ::close(_fd);
+        _fd = -1;
+    }
+}
 
 // attention: result list passed by reference!
 bool FolderWatcherPrivate::findFoldersBelow(const QDir &dir, QStringList &fullList)
@@ -149,13 +161,32 @@ void FolderWatcherPrivate::slotReceivedNotification(int fd)
         error = errno;
     }
 
+    if (len <= 0) {
+        // e.g. EINTR/EAGAIN: nothing was read. Converting -1 to unsigned below
+        // would walk far past the buffer.
+        if (len < 0 && error != EINTR && error != EAGAIN) {
+            qCWarning(lcFolderWatcher) << "inotify read failed:" << strerror(error);
+        }
+        return;
+    }
+
     // iterate events in buffer
-    unsigned int ulen = len;
-    for (i = 0; i + sizeof(inotify_event) < ulen; i += sizeof(inotify_event) + (event ? event->len : 0)) {
+    const auto ulen = static_cast<size_t>(len);
+    for (i = 0; i + sizeof(inotify_event) <= ulen; i += sizeof(inotify_event) + (event ? event->len : 0)) {
         // cast an inotify_event
         event = (struct inotify_event *)&buffer[i];
         if (!event) {
             qCDebug(lcFolderWatcher) << "NULL event";
+            continue;
+        }
+
+        // The kernel dropped this watch (directory deleted, moved away or
+        // unmounted): forget it so stale entries do not pile up.
+        if (event->mask & IN_IGNORED) {
+            // The same path may already be watched again under a new descriptor
+            if (const auto path = _watchToPath.take(event->wd); !path.isEmpty() && _pathToWatch.value(path, -1) == event->wd) {
+                _pathToWatch.remove(path);
+            }
             continue;
         }
 
