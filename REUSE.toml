@@ -145,3 +145,9 @@ path = ["theme/colored/EdalvixCloud-icon.svg", "theme/colored/br.com.edalvix.clo
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 EDALVIX"
 SPDX-License-Identifier = "LicenseRef-EdalvixTrademarks"
+
+[[annotations]]
+path = ["admin/edalvix/update-server/config/*.json"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 EDALVIX"
+SPDX-License-Identifier = "GPL-2.0-or-later"

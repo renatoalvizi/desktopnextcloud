@@ -1,0 +1,8 @@
+{
+  "name": "Edalvix Cloud",
+  "web": "https://edalvix.com.br/cloud/download",
+  "channels": {
+    "stable": {},
+    "beta": {}
+  }
+}

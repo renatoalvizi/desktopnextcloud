@@ -20,7 +20,8 @@ identidade visual da EDALVIX e conexão pré-configurada a
 | Ícones | cilindro azul do Edalvix Cloud: `theme/colored/EdalvixCloud-*`, ícone Linux `br.com.edalvix.cloud.edalvixcloud-icon.svg` |
 | Logo do assistente | `wizard_logo.*`: ícone + "Edalvix Cloud"; a marca EDALVIX aparece só como assinatura secundária ("por EDALVIX") |
 | GUIDs do Windows | novos (não conflita com o Nextcloud instalado na mesma máquina) |
-| Atualizador | desligado por padrão (`BUILD_UPDATER=OFF`); URL `https://updates.edalvix.cloud/client/` |
+| Atualizador | ligado, consultando `https://updates.edalvix.cloud/client/`, um servidor próprio em `admin/edalvix/update-server/` |
+| Idioma | Português (Brasil) por padrão, independentemente do idioma do sistema (`APPLICATION_DEFAULT_LANGUAGE=pt_BR`) |
 | Lista de provedores Nextcloud | desligada (`WITH_PROVIDERS=OFF`) |
 
 A configuração fica em `NEXTCLOUD.cmake`.
@@ -60,8 +61,21 @@ completas continuam aceitas.
 
 - **macOS:** defina `-DDEVELOPMENT_TEAM=<seu Team ID Apple>` e assine/notarize.
 - **Windows:** assine os binários e o MSI com o certificado da EDALVIX.
-- **Atualizações:** para atualização automática, publique um servidor de
-  updates em `APPLICATION_UPDATE_URL` e compile com `-DBUILD_UPDATER=ON`.
+- **Atualizações:** suba o servidor de `admin/edalvix/update-server/` em
+  `updates.edalvix.cloud` e publique cada versão nele (veja o README de lá).
+  No macOS, compile com `-DSPARKLE_PUBLIC_ED_KEY=<chave pública>`.
+
+## Idioma
+
+A interface abre em português do Brasil em qualquer sistema. Para outro
+idioma, use `edalvixcloud --set-language en` (ou outro código, como `es`).
+Para seguir o idioma do sistema por padrão, compile com
+`-DAPPLICATION_DEFAULT_LANGUAGE=""`.
+
+As traduções vêm de `translations/client_pt_BR.ts`. Foram completadas as frases
+recentes do macOS (File Provider e Sparkle) que ainda não tinham tradução. Ao
+trazer atualizações do Nextcloud, esse arquivo pode ter conflito: mantenha as
+traduções novas dos dois lados.
 - O esquema de URL `nc://` foi mantido porque o servidor Nextcloud o usa para
   "abrir localmente" e para o login.
 - Licença GPL-2.0+: o código-fonte do cliente distribuído deve ficar disponível.

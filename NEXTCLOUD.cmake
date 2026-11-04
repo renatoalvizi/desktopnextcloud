@@ -127,7 +127,14 @@ set( MAC_INSTALLER_BACKGROUND_FILE "${CMAKE_SOURCE_DIR}/admin/osx/installer-back
 # set( APPLICATION_LICENSE    "${OEM_THEME_DIR}/license.txt )
 
 ## Updater options
-option( BUILD_UPDATER "Build updater (needs an update server at APPLICATION_UPDATE_URL)" OFF )
+option( BUILD_UPDATER "Build updater (update server: admin/edalvix/update-server)" ON )
+# macOS (Sparkle): EdDSA public key of the EDALVIX update-signing key pair.
+# Generate once with Sparkle's `generate_keys` and keep the private key secret;
+# sign each release with `sign_update`. Without it macOS builds cannot self-update.
+set( SPARKLE_PUBLIC_ED_KEY "" CACHE STRING "Sparkle EdDSA public key used to verify macOS updates" )
+if(APPLE AND BUILD_UPDATER AND NOT SPARKLE_PUBLIC_ED_KEY)
+    message(WARNING "SPARKLE_PUBLIC_ED_KEY is empty: macOS automatic updates will be rejected by Sparkle.")
+endif()
 
 option( WITH_PROVIDERS "Build with providers list" OFF )
 
@@ -139,6 +146,11 @@ option(ENFORCE_SINGLE_ACCOUNT "Enforce use of a single account in desktop client
 option( DO_NOT_USE_PROXY "Do not use system wide proxy, instead always do a direct connection to server" OFF )
 
 option( WIN_DISABLE_USERNAME_PREFILL "Do not prefill the Windows user name when creating a new account" OFF )
+
+## Interface language: Edalvix Cloud always starts in Brazilian Portuguese,
+## whatever the OS language. Users can still switch with --set-language <code>;
+## set to "" to follow the OS language again.
+set( APPLICATION_DEFAULT_LANGUAGE "pt_BR" CACHE STRING "Default interface language (empty = OS language)" )
 
 ## Theming options
 set(NEXTCLOUD_BACKGROUND_COLOR "#0068ce" CACHE STRING "Default background color (Edalvix Cloud blue)")

@@ -326,7 +326,11 @@ public:
     /**
      * Override to encforce a particular locale, i.e. "de" or "pt_BR"
      */
-    [[nodiscard]] QString enforcedLocale() const { return QString(); }
+    /**
+     * Interface language used when the user has not chosen one
+     * (APPLICATION_DEFAULT_LANGUAGE, e.g. pt_BR). Empty = follow the OS.
+     */
+    [[nodiscard]] QString enforcedLocale() const;
 
     /** colored, white or black */
     [[nodiscard]] QString systrayIconFlavor(bool mono) const;

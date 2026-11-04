@@ -1,0 +1,37 @@
+{
+  "name": "Edalvix Cloud",
+  "web": "https://edalvix.com.br/cloud/download",
+  "channels": {
+    "stable": {
+      "win32": {
+        "version": "35.0.50.1",
+        "versionstring": "Edalvix Cloud 35.0.50",
+        "downloadurl": "https://updates.edalvix.cloud/download/EdalvixCloud-35.0.50-x64.msi",
+        "sha256": "<sha256 do arquivo>",
+        "date": "2026-11-04"
+      },
+      "win32-arm64": {
+        "version": "35.0.50.1",
+        "versionstring": "Edalvix Cloud 35.0.50",
+        "downloadurl": "https://updates.edalvix.cloud/download/EdalvixCloud-35.0.50-arm64.msi"
+      },
+      "macos": {
+        "version": "35.0.50.1",
+        "versionstring": "Edalvix Cloud 35.0.50",
+        "downloadurl": "https://updates.edalvix.cloud/download/EdalvixCloud-35.0.50.pkg",
+        "date": "2026-11-04",
+        "sparkle": {
+          "url": "https://updates.edalvix.cloud/download/EdalvixCloud-35.0.50.pkg.tbz",
+          "length": 123456789,
+          "edSignature": "<assinatura gerada pelo sign_update do Sparkle>"
+        }
+      },
+      "linux": {
+        "version": "35.0.50.1",
+        "versionstring": "Edalvix Cloud 35.0.50",
+        "downloadurl": "https://updates.edalvix.cloud/download/EdalvixCloud-35.0.50-x86_64.AppImage"
+      }
+    },
+    "beta": {}
+  }
+}
