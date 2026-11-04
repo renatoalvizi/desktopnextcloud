@@ -55,6 +55,10 @@
     <!-- Property to disable update checks -->
     <Property Id="SKIPAUTOUPDATE" Value="0" />
 
+    <!-- Edalvix Cloud: pre-configure the customer server at install time, e.g.
+         msiexec /i EdalvixCloud.msi OVERRIDESERVERURL=https://algumaempresa.edalvix.cloud -->
+    <Property Id="OVERRIDESERVERURL" Secure="yes" />
+
     <!-- Quit / restart application -->
     <util:RestartResource ProcessName="$(var.AppExe)" />
 
@@ -188,6 +192,13 @@
                 <RegistryValue Type="integer" Name="skipUpdateCheck" Value="[SKIPAUTOUPDATE]" />
             </RegistryKey>
         </Component>
+        <!-- Edalvix Cloud: server pre-configured via OVERRIDESERVERURL -->
+        <Component Id="RegistryOverrideServerUrl" Guid="*" Win64="$(var.PlatformWin64)">
+            <Condition>OVERRIDESERVERURL</Condition>
+            <RegistryKey Root="HKLM" Key="Software\$(var.AppVendor)\$(var.AppName)">
+                <RegistryValue Type="string" Name="overrideServerUrl" Value="[OVERRIDESERVERURL]" />
+            </RegistryKey>
+        </Component>
         <!-- Register URI handler -->
         <Component Id="RegistryUriHandler" Guid="*" Win64="$(var.PlatformWin64)">
             <RegistryKey Root="HKLM" Key="Software\Classes\$(var.AppCommandOpenUrlScheme)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
@@ -211,6 +222,7 @@
         <ComponentRef Id="RegistryVersionInfo" />
         <ComponentRef Id="RegistryDefaultSettings" />
         <ComponentRef Id="RegistryUriHandler" />
+        <ComponentRef Id="RegistryOverrideServerUrl" />
 
         <Feature Id="ShellExtensions" Title="Integration for Windows Explorer"
             Description="This feature requires a reboot." >

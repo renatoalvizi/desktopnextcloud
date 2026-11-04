@@ -52,6 +52,7 @@
 #include <QPointer>
 #include <QSslCertificate>
 #include <QSslConfiguration>
+#include <QRegularExpression>
 #include <QStorageInfo>
 #include <QTimer>
 #include <QUuid>
@@ -705,6 +706,14 @@ bool AccountWizardController::clientCertificateValid() const
 QString AccountWizardController::normalizeServerUrlInput(const QString &serverUrl, const QString &davPath)
 {
     auto result = serverUrl.simplified();
+#ifdef APPLICATION_SERVER_DOMAIN_SUFFIX
+    // Branded builds: a bare tenant name ("algumaempresa") is expanded to
+    // "algumaempresa.<suffix>", e.g. https://algumaempresa.edalvix.cloud
+    static const QRegularExpression tenantNamePattern(QStringLiteral("^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$"));
+    if (result.compare("localhost"_L1, Qt::CaseInsensitive) != 0 && tenantNamePattern.match(result).hasMatch()) {
+        result = result.toLower() + '.'_L1 + QStringLiteral(APPLICATION_SERVER_DOMAIN_SUFFIX);
+    }
+#endif
     if (!result.isEmpty() && !result.contains("://"_L1)) {
         result.prepend("https://"_L1);
     }

@@ -933,7 +933,11 @@ QString Theme::userIDHint() const
 
 QString Theme::wizardUrlHint() const
 {
+#ifdef APPLICATION_SERVER_DOMAIN_SUFFIX
+    return QStringLiteral("empresa  (https://empresa." APPLICATION_SERVER_DOMAIN_SUFFIX ")");
+#else
     return QString();
+#endif
 }
 
 QString Theme::quotaBaseFolder() const
