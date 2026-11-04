@@ -565,10 +565,12 @@ void AccountState::slotOcsError(int statusCode, const QString &message)
 void AccountState::slotCheckConnection()
 {
     if (_lastCheckConnectionTimer.isValid()) {
-        static constexpr auto DefaultCallingIntervalMaxMsec = static_cast<int>(ConnectionValidator::DefaultCallingIntervalMsec) * 8;
+        static constexpr auto DefaultCallingIntervalMaxMsec = static_cast<qint64>(ConnectionValidator::DefaultCallingIntervalMsec) * 8;
 
-        const auto minDelay = std::max(retryCount() * ConnectionValidator::DefaultCallingIntervalMsec,
-                                       static_cast<int>(ConnectionValidator::DefaultCallingIntervalMsec));
+        // 64-bit math: retryCount keeps growing while offline and an int product
+        // overflows after long disconnections.
+        const auto minDelay = std::max(static_cast<qint64>(retryCount()) * ConnectionValidator::DefaultCallingIntervalMsec,
+                                       static_cast<qint64>(ConnectionValidator::DefaultCallingIntervalMsec));
         const auto currentDelay = std::min(minDelay, DefaultCallingIntervalMaxMsec);
 
         if (!_lastCheckConnectionTimer.hasExpired(currentDelay - 1)) {
