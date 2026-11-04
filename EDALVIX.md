@@ -17,7 +17,8 @@ identidade visual da EDALVIX e conexão pré-configurada a
 | Fornecedor | Edalvix (`edalvix.com.br`) |
 | ID da aplicação | `br.com.edalvix.cloud` |
 | Cor padrão | `#0068ce`; cabeçalho do assistente branco com texto `#071d33` |
-| Ícones | `theme/colored/EdalvixCloud-*`, `wizard_logo.*`, ícone Linux `br.com.edalvix.cloud.edalvixcloud-icon.svg` |
+| Ícones | cilindro azul do Edalvix Cloud: `theme/colored/EdalvixCloud-*`, ícone Linux `br.com.edalvix.cloud.edalvixcloud-icon.svg` |
+| Logo do assistente | `wizard_logo.*`: ícone + "Edalvix Cloud"; a marca EDALVIX aparece só como assinatura secundária ("por EDALVIX") |
 | GUIDs do Windows | novos (não conflita com o Nextcloud instalado na mesma máquina) |
 | Atualizador | desligado por padrão (`BUILD_UPDATER=OFF`); URL `https://updates.edalvix.cloud/client/` |
 | Lista de provedores Nextcloud | desligada (`WITH_PROVIDERS=OFF`) |
