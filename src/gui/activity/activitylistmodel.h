@@ -201,6 +201,7 @@ protected Q_SLOTS:
 
 private Q_SLOTS:
     void addEntriesToActivityList(const OCC::ActivityList &activityList);
+    void trimSyncFileItemActivities();
     void accountStateHasChanged();
     void ingestActivities(const QJsonArray &activities);
     void appendMoreActivitiesAvailableEntry();
@@ -237,6 +238,9 @@ private:
 
     qint64 _currentItem = 0;
     static constexpr int _maxActivities = 100;
+    // Local sync results kept in the tray; older ones are dropped so that a
+    // client running for weeks does not grow without bound.
+    static constexpr int _maxSyncFileItemActivities = 200;
     static constexpr int _maxActivitiesDays = 30;
     bool _showMoreActivitiesAvailableEntry = false;
 

@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: 2026 EDALVIX
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+name: Edalvix update server
+
+on:
+  push:
+    paths:
+      - 'admin/edalvix/update-server/**'
+      - '.github/workflows/edalvix-update-server.yml'
+  pull_request:
+    paths:
+      - 'admin/edalvix/update-server/**'
+      - '.github/workflows/edalvix-update-server.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Lint
+        run: for f in $(find admin/edalvix/update-server -name '*.php'); do php -l "$f"; done
+
+      - name: Test
+        run: php admin/edalvix/update-server/tests/run.php
+
+      - name: Build image
+        run: docker build -t edalvix-update-server admin/edalvix/update-server
+
+      - name: Smoke test image
+        run: |
+          docker run -d --name eus -p 8080:80 \
+            -v "$PWD/admin/edalvix/update-server/config/releases.example.json:/srv/config/releases.json:ro" \
+            edalvix-update-server
+          for i in $(seq 1 20); do curl -fs http://127.0.0.1:8080/client/ > /dev/null && break; sleep 1; done
+          curl -fs "http://127.0.0.1:8080/client/?version=35.0.0&platform=win32&channel=stable&msi=true" | tee /dev/stderr | grep -q '<downloadurl>'
+          curl -fs "http://127.0.0.1:8080/client/?version=99.0.0&platform=win32" | grep -q '<owncloudclient/>'

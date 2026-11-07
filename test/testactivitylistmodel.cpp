@@ -130,6 +130,36 @@ private Q_SLOTS:
         testActivityAdd(&TestingALM::addSyncFileItemToActivityList, testSyncFileItemActivity);
     };
 
+    // A client running for weeks must not keep every synced file in memory
+    void testSyncFileItemActivitiesAreCapped() {
+        const auto model = testingALM();
+        QCOMPARE(model->rowCount(), 0);
+
+        // An error must survive the trimming
+        model->addErrorToActivityList(testSyncResultErrorActivity, OCC::ActivityListModel::ErrorType::SyncError);
+
+        constexpr auto added = 250;
+        constexpr auto cap = 200;
+        for (auto i = 0; i < added; ++i) {
+            auto activity = testSyncFileItemActivity;
+            activity._message = QStringLiteral("synced-%1").arg(i);
+            model->addSyncFileItemToActivityList(activity);
+        }
+
+        QCOMPARE(model->rowCount(), cap + 1);
+        QCOMPARE(model->errorsList().size(), 1);
+
+        // The oldest entries were dropped, the newest kept
+        auto messages = QStringList{};
+        for (auto row = 0; row < model->rowCount(); ++row) {
+            messages << model->index(row, 0).data(OCC::ActivityListModel::MessageRole).toString();
+        }
+        QVERIFY(!messages.contains(QStringLiteral("synced-0")));
+        QVERIFY(!messages.contains(QStringLiteral("synced-49")));
+        QVERIFY(messages.contains(QStringLiteral("synced-50")));
+        QVERIFY(messages.contains(QStringLiteral("synced-249")));
+    };
+
     void testAddNotification() {
         testActivityAdd(&TestingALM::addNotificationToActivityList, testNotificationActivity);
     };

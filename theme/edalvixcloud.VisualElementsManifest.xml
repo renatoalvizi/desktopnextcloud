@@ -1,0 +1,8 @@
+<Application xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+  <VisualElements
+	ForegroundText="dark"
+  BackgroundColor="#ffffff"
+  ShowNameOnSquare150x150Logo="on"
+  Square150x150Logo="visualelements\EdalvixCloud-w10starttile.png"
+	Square70x70Logo="visualelements\EdalvixCloud-w10starttile.png"/>
+</Application>

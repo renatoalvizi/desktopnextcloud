@@ -43,8 +43,11 @@ void WatcherThread::watchChanges(size_t fileNotifyBufferSize,
         return;
     }
 
-    OVERLAPPED overlapped;
+    // All unused members must be zero (Win32 requirement for OVERLAPPED)
+    OVERLAPPED overlapped{};
     overlapped.hEvent = _resultEvent;
+    // True while the kernel may still write into fileNotifyBuffer/overlapped
+    bool ioPending = false;
 
     // QVarLengthArray ensures the stack-buffer is aligned like double and qint64.
     QVarLengthArray<char, 4096 * 10> fileNotifyBuffer;
@@ -79,6 +82,7 @@ void WatcherThread::watchChanges(size_t fileNotifyBufferSize,
             }
             break;
         }
+        ioPending = true;
 
         Q_EMIT ready();
 
@@ -98,6 +102,7 @@ void WatcherThread::watchChanges(size_t fileNotifyBufferSize,
         }
 
         bool ok = GetOverlappedResult(_directory, &overlapped, &dwBytesReturned, false);
+        ioPending = false;
         if (!ok) {
             const DWORD errorCode = GetLastError();
             if (errorCode == ERROR_NOTIFY_ENUM_DIR) {
@@ -121,9 +126,10 @@ void WatcherThread::watchChanges(size_t fileNotifyBufferSize,
             if (curEntry->Action != FILE_ACTION_REMOVED
                 && curEntry->Action != FILE_ACTION_RENAMED_OLD_NAME) {
                 const auto wfile = longfile.toStdWString();
-                const int longNameSize = GetLongPathNameW(wfile.data(), fileNameBuffer, fileNameBufferSize);
+                const auto longNameSize = GetLongPathNameW(wfile.data(), fileNameBuffer, fileNameBufferSize);
                 const auto error = GetLastError();
-                if (longNameSize > 0) {
+                // A result >= the buffer size is the size *needed*: the buffer was not filled
+                if (longNameSize > 0 && longNameSize < fileNameBufferSize) {
                     longfile = QString::fromWCharArray(fileNameBuffer, longNameSize);
                 } else if (error != ERROR_FILE_NOT_FOUND) {
                     qCWarning(lcFolderWatcher) << "Error converting file name" << longfile << "to full length, keeping original name." << Utility::formatWinError(error);
@@ -152,7 +158,13 @@ void WatcherThread::watchChanges(size_t fileNotifyBufferSize,
         }
     }
 
-    CancelIo(_directory);
+    if (ioPending) {
+        // The buffers live on this stack frame: wait until the cancelled read
+        // has really finished, otherwise the kernel could write into freed memory.
+        CancelIoEx(_directory, &overlapped);
+        DWORD ignored = 0;
+        GetOverlappedResult(_directory, &overlapped, &ignored, TRUE);
+    }
     closeHandle();
 }
 
@@ -192,6 +204,14 @@ void WatcherThread::run()
 WatcherThread::~WatcherThread()
 {
     closeHandle();
+    if (_resultEvent) {
+        CloseHandle(_resultEvent);
+        _resultEvent = nullptr;
+    }
+    if (_stopEvent) {
+        CloseHandle(_stopEvent);
+        _stopEvent = nullptr;
+    }
 }
 
 void WatcherThread::stop()

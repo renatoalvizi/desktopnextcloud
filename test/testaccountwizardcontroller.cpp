@@ -320,6 +320,23 @@ private Q_SLOTS:
                  QStringLiteral("http://cloud.example"));
     }
 
+    void expandsBareTenantNameToBrandedDomain()
+    {
+#ifdef APPLICATION_SERVER_DOMAIN_SUFFIX
+        const auto suffix = QStringLiteral(APPLICATION_SERVER_DOMAIN_SUFFIX);
+        QCOMPARE(AccountWizardController::normalizeServerUrlInput(QStringLiteral(" AlgumaEmpresa ")),
+                 QStringLiteral("https://algumaempresa.") + suffix);
+        QCOMPARE(AccountWizardController::normalizeServerUrlInput(QStringLiteral("minha-empresa")),
+                 QStringLiteral("https://minha-empresa.") + suffix);
+        QCOMPARE(AccountWizardController::normalizeServerUrlInput(QStringLiteral("localhost")),
+                 QStringLiteral("https://localhost"));
+        QCOMPARE(AccountWizardController::normalizeServerUrlInput(QStringLiteral("-invalid")),
+                 QStringLiteral("https://-invalid"));
+#else
+        QSKIP("Build has no APPLICATION_SERVER_DOMAIN_SUFFIX");
+#endif
+    }
+
     void localNetworkPermissionCheckIgnoresInvalidUrls()
     {
         auto callbackCalled = false;

@@ -145,13 +145,13 @@ bool PushNotifications::tryReconnectToWebSocket()
 
     if (!_reconnectTimer) {
         _reconnectTimer = new QTimer(this);
+        _reconnectTimer->setSingleShot(true);
+        // Connect only once: connecting on every attempt piled up handlers over
+        // the client's lifetime, so one timeout fired many reconnects at once.
+        connect(_reconnectTimer, &QTimer::timeout, this, &PushNotifications::reconnectToWebSocket);
     }
 
     _reconnectTimer->setInterval(_reconnectTimerInterval);
-    _reconnectTimer->setSingleShot(true);
-    connect(_reconnectTimer, &QTimer::timeout, [this]() {
-        reconnectToWebSocket();
-    });
     _reconnectTimer->start();
 
     return true;

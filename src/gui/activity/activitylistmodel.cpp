@@ -804,6 +804,43 @@ void ActivityListModel::addSyncFileItemToActivityList(const Activity &activity)
 {
     qCDebug(lcActivity) << "Successfully added to the activity list: " << activity._subject;
     addEntriesToActivityList({activity});
+    trimSyncFileItemActivities();
+}
+
+void ActivityListModel::trimSyncFileItemActivities()
+{
+    // Only successful local sync results are trimmed: errors, conflicts and
+    // notifications stay until they are resolved or dismissed.
+    const auto isTrimmable = [](const Activity &activity) {
+        return activity._type == Activity::SyncFileItemType
+            && (activity._syncFileItemStatus == SyncFileItem::Success || activity._syncFileItemStatus == SyncFileItem::NoStatus);
+    };
+
+    auto toRemove = static_cast<qsizetype>(std::ranges::count_if(_finalList, isTrimmable)) - _maxSyncFileItemActivities;
+    if (toRemove <= 0) {
+        return;
+    }
+
+    // Entries are appended in arrival order, so the first ones are the oldest
+    for (auto first = qsizetype{0}; first < _finalList.size() && toRemove > 0;) {
+        if (!isTrimmable(_finalList.at(first))) {
+            ++first;
+            continue;
+        }
+
+        auto last = first;
+        while (last + 1 < _finalList.size() && (last - first + 1) < toRemove && isTrimmable(_finalList.at(last + 1))) {
+            ++last;
+        }
+
+        beginRemoveRows({}, static_cast<int>(first), static_cast<int>(last));
+        _finalList.remove(first, last - first + 1);
+        endRemoveRows();
+        toRemove -= last - first + 1;
+    }
+
+    refreshPreviewData();
+    Q_EMIT activityListChanged();
 }
 
 void ActivityListModel::removeActivityFromActivityList(int row)

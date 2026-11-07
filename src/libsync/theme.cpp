@@ -931,9 +931,22 @@ QString Theme::userIDHint() const
     return QString();
 }
 
+QString Theme::enforcedLocale() const
+{
+#ifdef APPLICATION_DEFAULT_LANGUAGE
+    return QStringLiteral(APPLICATION_DEFAULT_LANGUAGE);
+#else
+    return QString();
+#endif
+}
+
 QString Theme::wizardUrlHint() const
 {
+#ifdef APPLICATION_SERVER_DOMAIN_SUFFIX
+    return QStringLiteral("empresa  (https://empresa." APPLICATION_SERVER_DOMAIN_SUFFIX ")");
+#else
     return QString();
+#endif
 }
 
 QString Theme::quotaBaseFolder() const

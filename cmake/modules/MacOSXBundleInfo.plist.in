@@ -46,13 +46,11 @@
     <key>NSRequiresAquaSystemAppearance</key>
     <false/>
     <key>NSLocalNetworkUsageDescription</key>
-    <string>Nextcloud needs access to your local network to connect to Nextcloud servers hosted there.</string>
+    <string>@APPLICATION_NAME@ needs access to your local network to connect to servers hosted there.</string>
     <key>SUShowReleaseNotes</key>
     <false/>
-    <key>SUPublicDSAKeyFile</key>
-    <string>dsa_pub.pem</string>
     <key>SUPublicEDKey</key>
-    <string>c3RcfDWDayvsYSZW8FhZN1UOJhvPVN30zleb4zOqbtU=</string>
+    <string>@SPARKLE_PUBLIC_ED_KEY@</string>
     <key>SUEnableInstallerLauncherService</key>
     <true/>
     <key>UTExportedTypeDeclarations</key>

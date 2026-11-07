@@ -7178,6 +7178,88 @@ Servidor respondeu com erro: %2</translation>
         <source>An unexpected error occurred. Please try syncing again or contact your server administrator if the issue continues.</source>
         <translation>Ocorreu um erro inesperado. Tente sincronizar novamente ou entre em contato com a administração do seu servidor se o problema persistir.</translation>
     </message>
+    <message>
+        <source>Found a valid update: version %1</source>
+        <comment>%1 is version number</comment>
+        <translation>Atualização válida encontrada: versão %1</translation>
+    </message>
+    <message>
+        <source>No valid update found.</source>
+        <translation>Nenhuma atualização válida encontrada.</translation>
+    </message>
+    <message>
+        <source>About to install version %1 update.</source>
+        <comment>%1 is version number</comment>
+        <translation>Prestes a instalar a atualização da versão %1.</translation>
+    </message>
+    <message>
+        <source>Finished loading appcast.</source>
+        <translation>Lista de atualizações carregada.</translation>
+    </message>
+    <message>
+        <source>Update version %1 will not be applied as it was chosen to be skipped.</source>
+        <comment>%1 is version number</comment>
+        <translation>A atualização da versão %1 não será aplicada porque foi escolhido ignorá-la.</translation>
+    </message>
+    <message>
+        <source>Update version %1 will be installed.</source>
+        <comment>%1 is version number</comment>
+        <translation>A atualização da versão %1 será instalada.</translation>
+    </message>
+    <message>
+        <source>Update version %1 will not be applied as it was dismissed.</source>
+        <comment>%1 is version number</comment>
+        <translation>A atualização da versão %1 não será aplicada porque foi dispensada.</translation>
+    </message>
+    <message>
+        <source>Downloading version %1 update.</source>
+        <comment>%1 is version number</comment>
+        <translation>Baixando a atualização da versão %1.</translation>
+    </message>
+    <message>
+        <source>Downloaded version %1 update.</source>
+        <comment>%1 is version number</comment>
+        <translation>Atualização da versão %1 baixada.</translation>
+    </message>
+    <message>
+        <source>Error downloading version %1 update: %2</source>
+        <comment>%1 is version number, %2 is error message</comment>
+        <translation>Erro ao baixar a atualização da versão %1: %2</translation>
+    </message>
+    <message>
+        <source>Extracting version %1 update.</source>
+        <comment>%1 is version number</comment>
+        <translation>Extraindo a atualização da versão %1.</translation>
+    </message>
+    <message>
+        <source>Extracted version %1 update.</source>
+        <comment>%1 is version number</comment>
+        <translation>Atualização da versão %1 extraída.</translation>
+    </message>
+    <message>
+        <source>Update download cancelled.</source>
+        <translation>Download da atualização cancelado.</translation>
+    </message>
+    <message>
+        <source>Send a Nextcloud Talk reply</source>
+        <translation>Enviar uma resposta no Nextcloud Talk</translation>
+    </message>
+    <message>
+        <source>Virtual files is disabled by an organization policy</source>
+        <translation>Os arquivos virtuais estão desativados por uma política da organização</translation>
+    </message>
+    <message>
+        <source>Virtual files is enabled by an organization policy</source>
+        <translation>Os arquivos virtuais estão ativados por uma política da organização</translation>
+    </message>
+    <message>
+        <source>You can set up classic sync folders instead.</source>
+        <translation>Em vez disso, você pode configurar pastas de sincronização clássicas.</translation>
+    </message>
+    <message>
+        <source>You can use it by clicking the File Provider checkbox in the general settings.</source>
+        <translation>Você pode usá-lo marcando a opção File Provider nas configurações gerais.</translation>
+    </message>
 </context>
 <context>
     <name>RecipientPermissionDialog</name>
@@ -8554,6 +8636,102 @@ Este é um novo modo experimental. Se você decidir usá-lo, por favor, relate q
         <location filename="../src/gui/guiutility.cpp" line="150"/>
         <source>Stay safe</source>
         <translation>Fique seguro</translation>
+    </message>
+</context>
+<context>
+    <name>OCC::Mac::FileProviderSettingsController</name>
+    <message>
+        <source>Unsynchronized Content</source>
+        <translation>Conteúdo não sincronizado</translation>
+    </message>
+    <message>
+        <source>Some of your locally changed items were not uploaded yet but will be preserved.</source>
+        <translation>Alguns itens alterados localmente ainda não foram enviados, mas serão preservados.</translation>
+    </message>
+    <message>
+        <source>Setting up…</source>
+        <translation>Configurando…</translation>
+    </message>
+    <message>
+        <source>Cleaning up…</source>
+        <translation>Limpando…</translation>
+    </message>
+    <message>
+        <source>Resetting…</source>
+        <translation>Redefinindo…</translation>
+    </message>
+    <message>
+        <source>File Provider reset failed</source>
+        <translation>Falha ao redefinir o File Provider</translation>
+    </message>
+    <message>
+        <source>The File Provider domain for this account could not be re-created. File Provider is now turned off for this account; it will be set up again the next time %1 starts.</source>
+        <translation>Não foi possível recriar o domínio do File Provider para esta conta. O File Provider agora está desativado para esta conta; ele será configurado novamente na próxima vez que o %1 for iniciado.</translation>
+    </message>
+    <message>
+        <source>File Provider enabled</source>
+        <translation>File Provider ativado</translation>
+    </message>
+    <message>
+        <source>File Provider has been enabled for all accounts.
+
+Your files are now accessible in Finder under the &quot;Locations&quot; section.</source>
+        <translation>O File Provider foi ativado para todas as contas.
+
+Seus arquivos agora estão acessíveis no Finder, na seção “Locais”.</translation>
+    </message>
+    <message>
+        <source>File Provider could not be enabled for all accounts</source>
+        <translation>Não foi possível ativar o File Provider para todas as contas</translation>
+    </message>
+    <message>
+        <source>File Provider could not be set up for the following account(s):
+%1
+
+Your classic sync folders were left unchanged. You will be asked how to proceed the next time %2 starts, or you can resolve it from the account settings.</source>
+        <translation>Não foi possível configurar o File Provider para as seguintes contas:
+%1
+
+Suas pastas de sincronização clássicas não foram alteradas. Você será perguntado sobre como prosseguir na próxima vez que o %2 for iniciado, ou pode resolver isso nas configurações da conta.</translation>
+    </message>
+    <message>
+        <source>This installation has both the File Provider integration and classic sync folders configured. macOS cannot run the File Provider integration and the classic Finder integration at the same time.</source>
+        <translation>Esta instalação tem a integração File Provider e pastas de sincronização clássicas configuradas. O macOS não consegue executar a integração File Provider e a integração clássica do Finder ao mesmo tempo.</translation>
+    </message>
+    <message>
+        <source>Keep File Provider: all accounts appear in Finder under &quot;Locations&quot;. Classic sync folder connections will be removed. Already synced files will be preserved in place.</source>
+        <translation>Manter o File Provider: todas as contas aparecem no Finder, em “Locais”. As conexões das pastas de sincronização clássicas serão removidas. Os arquivos já sincronizados serão preservados no lugar.</translation>
+    </message>
+    <message>
+        <source>Keep classic sync folders: File Provider is turned off for all accounts. Items that were not uploaded yet will be preserved.</source>
+        <translation>Manter as pastas de sincronização clássicas: o File Provider será desativado para todas as contas. Os itens que ainda não foram enviados serão preservados.</translation>
+    </message>
+    <message>
+        <source>Choose how to sync your files</source>
+        <translation>Escolha como sincronizar seus arquivos</translation>
+    </message>
+    <message>
+        <source>Keep File Provider</source>
+        <translation>Manter o File Provider</translation>
+    </message>
+    <message>
+        <source>Keep classic sync folders</source>
+        <translation>Manter as pastas de sincronização clássicas</translation>
+    </message>
+    <message>
+        <source>Decide later</source>
+        <translation>Decidir depois</translation>
+    </message>
+</context>
+<context>
+    <name>OCC::Mac::FileProviderDomainManager</name>
+    <message>
+        <source>%1 application has been closed. Reopen to reconnect.</source>
+        <translation>O aplicativo %1 foi fechado. Abra-o novamente para reconectar.</translation>
+    </message>
+    <message>
+        <source>This account is not authenticated. Please check your account state in the %1 application.</source>
+        <translation>Esta conta não está autenticada. Verifique o estado da sua conta no aplicativo %1.</translation>
     </message>
 </context>
 </TS>
