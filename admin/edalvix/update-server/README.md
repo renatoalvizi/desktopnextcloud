@@ -78,8 +78,11 @@ forma atômica. Os clientes recebem a nova versão na próxima verificação, qu
 automática (a cada poucas horas) ou manual (nas configurações do cliente).
 Exemplo completo do manifesto: `config/releases.example.json`.
 
-Para testar primeiro com um grupo, publique no canal `beta` (`--channel=beta`).
-Os usuários escolhem o canal nas configurações do cliente.
+O cliente Edalvix Cloud, por ser uma versão com marca própria, usa sempre o
+canal `stable` (é uma regra do cliente do Nextcloud para builds com marca); o
+canal `beta` do manifesto só é usado por builds sem marca. Para testar uma
+versão com um grupo antes de todos, publique-a num servidor de atualizações à
+parte e compile o cliente desse grupo com outro `APPLICATION_UPDATE_URL`.
 
 ## Chave do Sparkle (macOS): fazer uma vez
 

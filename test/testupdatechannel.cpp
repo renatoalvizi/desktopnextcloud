@@ -38,6 +38,13 @@ private Q_SLOTS:
 
     void testUpdateChannel()
     {
+        // Branded builds (e.g. Edalvix Cloud) are pinned to the default channel by
+        // ConfigFile::currentUpdateChannel(); unbranded ones follow config and accounts.
+        const auto branded = OCC::Theme::instance()->isBranded();
+        const auto expect = [branded](const UpdateChannel &channel) {
+            return branded ? UpdateChannel::defaultUpdateChannel().toString() : channel.toString();
+        };
+
         QScopedPointer<FakeQNAM> fakeQnam(new FakeQNAM({}));
 
         // Set override for delete operation. This is needed, because by default FakeQNAM results in an
@@ -69,7 +76,7 @@ private Q_SLOTS:
             account->setServerHasValidSubscription(false);
             OCC::AccountManager::instance()->addAccount(account);
         }
-        QCOMPARE(OCC::ConfigFile().currentUpdateChannel(), UpdateChannel::Beta.toString());
+        QCOMPARE(OCC::ConfigFile().currentUpdateChannel(), expect(UpdateChannel::Beta));
 
         {
             auto fakeCreds = new FakeCredentials{fakeQnam.data()};
@@ -81,7 +88,7 @@ private Q_SLOTS:
             account->setEnterpriseUpdateChannel(UpdateChannel::Stable);
             OCC::AccountManager::instance()->addAccount(account);
         }
-        QCOMPARE(OCC::ConfigFile().currentUpdateChannel(), UpdateChannel::Stable.toString());
+        QCOMPARE(OCC::ConfigFile().currentUpdateChannel(), expect(UpdateChannel::Stable));
 
         {
             auto fakeCreds = new FakeCredentials{fakeQnam.data()};
@@ -93,21 +100,21 @@ private Q_SLOTS:
             account->setEnterpriseUpdateChannel(UpdateChannel::Enterprise);
             OCC::AccountManager::instance()->addAccount(account);
         }
-        QCOMPARE(OCC::ConfigFile().currentUpdateChannel(), UpdateChannel::Enterprise.toString());
+        QCOMPARE(OCC::ConfigFile().currentUpdateChannel(), expect(UpdateChannel::Enterprise));
 
         {
             auto account = OCC::AccountManager::instance()->account("EnterpriseEnterprise@");
             QVERIFY(account);
             OCC::AccountManager::instance()->deleteAccount(account.get());
         }
-        QCOMPARE(OCC::ConfigFile().currentUpdateChannel(), UpdateChannel::Stable.toString());
+        QCOMPARE(OCC::ConfigFile().currentUpdateChannel(), expect(UpdateChannel::Stable));
 
         {
             auto account = OCC::AccountManager::instance()->account("EnterpriseStable@");
             QVERIFY(account);
             OCC::AccountManager::instance()->deleteAccount(account.get());
         }
-        QCOMPARE(OCC::ConfigFile().currentUpdateChannel(), UpdateChannel::Beta.toString());
+        QCOMPARE(OCC::ConfigFile().currentUpdateChannel(), expect(UpdateChannel::Beta));
     }
 };
 

@@ -107,7 +107,13 @@ set( APPLICATION_SERVER_DOMAIN_SUFFIX "${EDALVIX_CLOUD_DOMAIN}" )
 set( APPLICATION_SERVER_URL_ENFORCE ON ) # If set and APPLICATION_SERVER_URL is defined, the server can only connect to the pre-defined URL
 set( APPLICATION_REV_DOMAIN "br.com.edalvix.cloud" )
 set( APPLICATION_REV_DOMAIN_DBUS "cloud.edalvix.com.br" )
-set( DEVELOPMENT_TEAM "" CACHE STRING "Apple Development Team ID (set to the Edalvix Apple team for signed macOS builds)" )
+# Apple Team ID: part of the macOS app group and extension identifiers, so it can
+# not be empty. EDALVIXTEAM only lets unsigned builds compile: set the real
+# EDALVIX team (-DDEVELOPMENT_TEAM=XXXXXXXXXX) for any build you sign and ship.
+set( DEVELOPMENT_TEAM "EDALVIXTEAM" CACHE STRING "Apple Development Team ID of EDALVIX (required to sign macOS builds)" )
+if(APPLE AND DEVELOPMENT_TEAM STREQUAL "EDALVIXTEAM")
+    message(WARNING "DEVELOPMENT_TEAM is the placeholder EDALVIXTEAM: set the EDALVIX Apple Team ID before signing a macOS build.")
+endif()
 set( APPLICATION_VIRTUALFILE_SUFFIX "edalvix" CACHE STRING "Virtual file suffix (not including the .)")
 set( APPLICATION_OCSP_STAPLING_ENABLED OFF )
 set( APPLICATION_FORBID_BAD_SSL OFF )
